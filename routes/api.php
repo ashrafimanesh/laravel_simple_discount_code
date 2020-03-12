@@ -1,5 +1,6 @@
 <?php
 
+use App\DataModels\BaseResponse;
 use Illuminate\Http\Request;
 
 /*
@@ -14,5 +15,5 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    return response()->json((new BaseResponse())->setData($request->user())->toArray());
 });

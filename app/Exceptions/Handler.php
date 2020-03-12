@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use App\DataModels\BaseResponse;
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -46,6 +48,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if($request->isJson()){
+            $baseResponse = new BaseResponse(500,null, $exception->getMessage());
+            switch(true){
+                case $exception instanceof AuthenticationException:
+                    $baseResponse->setCode(403)->setMessage($exception->getMessage())->setException($exception);
+                    break;
+            }
+            return response()->json($baseResponse->toArray());
+        }
         return parent::render($request, $exception);
     }
 }
