@@ -55,4 +55,9 @@ class User extends Authenticatable
         //TODO check role!
         return $this->email == 'admin@test.com';
     }
+
+    public function getApiToken()
+    {
+        return $this->api_token;
+    }
 }
