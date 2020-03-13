@@ -43,6 +43,10 @@ class Coupon extends Model
         'expired_at'
     ];
 
+    protected $hidden = [
+        'deleted_at'
+    ];
+
     //
     public static function types()
     {

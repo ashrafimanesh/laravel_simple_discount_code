@@ -10,11 +10,25 @@ namespace App\Repositories;
 
 
 use App\Coupon;
+use App\Support\QueryFilter;
 use App\User;
 use Illuminate\Support\Arr;
 
 class CouponRepository
 {
+
+    public function index(User $user, QueryFilter $queryFilter)
+    {
+        $query = Coupon::query();
+        if(!$user->isAdmin()){
+            $query->active();
+        }
+
+        $query = $queryFilter->filter($query);
+
+        return $query->get();
+    }
+
     public function store(User $user, array $data): Coupon{
 
         $data['created_by'] = $user->getId();

@@ -13,11 +13,19 @@ use App\Coupon;
 use App\DataModels\BaseResponse;
 use App\Http\Requests\Api\StoreCouponRequest;
 use App\Repositories\CouponRepository;
+use App\Support\QueryFilter;
 use App\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class CouponController extends Controller
 {
+    public function index(Request $request){
+
+        $coupon = (new CouponRepository())->index(Auth::user(), new QueryFilter($request->filters ?? []));
+
+        return (new BaseResponse(BaseResponse::CODE_SUCCESS,$coupon));
+    }
 
     public function store(StoreCouponRequest $request){
         /** @var User $user */
