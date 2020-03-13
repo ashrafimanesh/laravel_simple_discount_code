@@ -28,4 +28,6 @@ class CouponController extends Controller
             (new BaseResponse(BaseResponse::CODE_SUCCESS,$coupon->toArray())) :
             (new BaseResponse(BaseResponse::CODE_OPERATION_FAILED, null, 'Operation failed!'));
     }
+
+
 }

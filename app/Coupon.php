@@ -97,4 +97,9 @@ class Coupon extends Model
     {
         return $this->status = self::STATUS_EXPIRED;
     }
+
+    public function getId()
+    {
+        return $this->id;
+    }
 }

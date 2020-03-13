@@ -4,13 +4,10 @@ namespace Tests\Feature;
 
 use App\Brand;
 use App\Coupon;
-use App\DataModels\BaseResponse;
 use App\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CouponTest extends TestCase
 {
@@ -19,7 +16,7 @@ class CouponTest extends TestCase
      *
      * @return void
      */
-    public function testExample()
+    public function testStore()
     {
         $data = [
             'name'=>Str::random(60),
@@ -37,7 +34,7 @@ class CouponTest extends TestCase
         ]);
         $response->assertStatus(200);
 
-        $coupon = Coupon::orderBy('id', 'DESC')->first();
-        $this->assertTrue($coupon->name==$data['name']);
+        $coupon = Coupon::where('name', $data['name'])->first();
+        $this->assertTrue(($coupon->name ?? '')==$data['name']);
     }
 }
