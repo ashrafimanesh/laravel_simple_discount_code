@@ -11,7 +11,9 @@ namespace App\Repositories;
 
 use App\Coupon;
 use App\CouponCode;
+use App\Events\CouponCodeCapacityEvent;
 use App\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class CouponCodeRepository
@@ -40,5 +42,31 @@ class CouponCodeRepository
             DB::rollback();
             throw $e;
         }
+    }
+
+    public function assign(User $assigner, User $assignee, Coupon $coupon, $code = null)
+    {
+        if($code){
+            $query = CouponCode::where(['code' => $code]);
+        }
+        else{
+            $query = CouponCode::query();
+        }
+
+        $couponCode = $query->free($coupon->getId())->first();
+        if(!$couponCode){
+            event(new CouponCodeCapacityEvent($coupon));
+            return false;
+        }
+
+        $result = $couponCode->update([
+            'assigned_to'=>$assignee->getId(),
+            'assigned_by'=>$assigner->getId(),
+            'assigned_at'=>Carbon::now()
+        ]);
+        if(!$result && !$code){
+            event(new CouponCodeCapacityEvent($coupon));
+        }
+        return $couponCode;
     }
 }
