@@ -10,7 +10,10 @@
 * To call API routes you can run `php artisan auth:api_token {email}` command to get user token.
 
 * Token usages:
-    - Header: `Authentication: Bearer {token}`
+    - Header: `Authorization: Bearer {token}`
     - params: `api_token={token}`
 
+### Tests
+
+Run `./vendor/bin/phpunit` to run tests.
 

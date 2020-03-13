@@ -18,13 +18,14 @@ use Illuminate\Support\Facades\Auth;
 
 class CouponController extends Controller
 {
+
     public function store(StoreCouponRequest $request){
         /** @var User $user */
         $user = Auth::user();
         $coupon = (new CouponRepository())->store($user, $request->validated());
 
         return ($coupon instanceof Coupon) ?
-            (new BaseResponse(BaseResponse::CODE_SUCCESS,$coupon)) :
+            (new BaseResponse(BaseResponse::CODE_SUCCESS,$coupon->toArray())) :
             (new BaseResponse(BaseResponse::CODE_OPERATION_FAILED, null, 'Operation failed!'));
     }
 }

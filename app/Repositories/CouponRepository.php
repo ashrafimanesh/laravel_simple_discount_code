@@ -16,9 +16,6 @@ use Illuminate\Support\Arr;
 class CouponRepository
 {
     public function store(User $user, array $data): Coupon{
-        if($data['published_at'] ?? false){
-            $data['published_at'] = $data['published_at'].' 00:00:00';
-        }
 
         $data['created_by'] = $user->getId();
         $coupon = Coupon::create(Arr::only($data, [

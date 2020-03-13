@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if($request->isJson() || $request->wantsJson()){
+        if($request->wantsJson()){
             $baseResponse = new BaseResponse(BaseResponse::CODE_EXCEPTION,null, $exception->getMessage());
             switch(true){
                 case $exception instanceof AuthenticationException:
@@ -59,7 +59,9 @@ class Handler extends ExceptionHandler
                     $baseResponse->setCode(BaseResponse::CODE_VALIDATION)->setData($exception->errors());
                     break;
             }
-            return response()->json($baseResponse->toArray());
+            return response($baseResponse->toArray(), $baseResponse->getCode()==BaseResponse::CODE_EXCEPTION
+                ? BaseResponse::CODE_EXCEPTION
+                : BaseResponse::CODE_SUCCESS);
         }
         return parent::render($request, $exception);
     }

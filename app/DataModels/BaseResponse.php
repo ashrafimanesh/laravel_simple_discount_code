@@ -68,6 +68,10 @@ class BaseResponse
         ];
     }
 
+    public function __toString(){
+        return json_encode($this->toArray());
+    }
+
     /**
      * @param array $data
      * @return BaseResponse
@@ -76,5 +80,10 @@ class BaseResponse
     {
         $this->data = $data;
         return $this;
+    }
+
+    public function getCode()
+    {
+        return $this->code;
     }
 }
