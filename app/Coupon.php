@@ -33,6 +33,10 @@ class Coupon extends Model
     const STATUS_INACTIVE = 'inactive';
     const STATUS_EXPIRED = 'expired';
 
+    protected $fillable = [
+        'name','amount','brand_id','status','type','published_at','created_by','expired_at','link'
+    ];
+
     protected $dates = [
         'deleted_at',
         'published_at',
@@ -92,5 +96,10 @@ class Coupon extends Model
     public function isExpired()
     {
         return $this->status = self::STATUS_EXPIRED;
+    }
+
+    public function getId()
+    {
+        return $this->id;
     }
 }
