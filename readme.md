@@ -18,7 +18,21 @@
 Run `./vendor/bin/phpunit` to run tests.
 
 
-### Assign code
+### Routes
+
+* Call `/api/admin/coupon` api: 
+    - `name`(required and unique) 
+    - `brand_id` (required)
+    - `amount` (required)
+    - `type` (required and one of: `unique | normal | offer` 
+    - `status`(required and one of `active | expired | inactive`
+    - `link` (optional)
+    - `published_at` (optional , exp: `2020-03-13 19:26:00`)
+
+* Call `/api/admin/coupon-code` api: 
+    - `coupon_id` 
+    - `code` (file or string)
+Note: This route is transactional. 
 
 * Call `/api/admin/coupon-code/assign` api :
 
