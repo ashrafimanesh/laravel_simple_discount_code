@@ -21,6 +21,7 @@ Route::middleware(['auth:api'])->namespace('Api')->group(function(){
         });
         Route::prefix('coupon-code')->group(function(){
             Route::post('/','CouponCodeController@store');
+            Route::post('assign','CouponCodeController@assign');
         });
     });
 });

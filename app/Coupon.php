@@ -34,7 +34,7 @@ class Coupon extends Model
     const STATUS_EXPIRED = 'expired';
 
     protected $fillable = [
-        'name','amount','brand_id','status','type','published_at','created_by','expired_at','link'
+        'name', 'amount', 'brand_id', 'status', 'type', 'published_at', 'created_by', 'expired_at', 'link'
     ];
 
     protected $dates = [
@@ -54,19 +54,49 @@ class Coupon extends Model
         return [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_EXPIRED];
     }
 
+    public static function staticActive($query)
+    {
+        $query = static::staticPublished($query);
+        $query = static::staticActiveStatus($query);
+        $query = static::staticNotExpired($query);
+        return $query;
+    }
+
+    public static function staticNotExpired($query)
+    {
+        return $query->where(function ($query) {
+            return $query->whereNull('expired_at')->orWhere('expired_at', '>', Carbon::now());
+        });
+    }
+
     public function scopeActive($query)
     {
-        return $query->published()->activeStatus();
+        return static::staticActive($query);
     }
 
     public function scopeActiveStatus($query)
+    {
+        return static::staticActiveStatus($query);
+    }
+
+    public static function staticActiveStatus($query)
     {
         return $query->where('status', self::STATUS_ACTIVE);
     }
 
     public function scopePublished($query)
     {
+        return static::staticPublished($query);
+    }
+
+    public static function staticPublished($query)
+    {
         return $query->where('published_at', '>=', Carbon::now());
+    }
+
+    public function scopeNotExpired($query)
+    {
+        return static::staticNotExpired($query);
     }
 
     public function codes()
@@ -84,7 +114,8 @@ class Coupon extends Model
         return $this->belongsTo(Brand::TABLE_NAME, 'brand_id');
     }
 
-    public function isUnique(){
+    public function isUnique()
+    {
         return $this->type == self::TYPE_UNIQUE;
     }
 
@@ -101,5 +132,12 @@ class Coupon extends Model
     public function getId()
     {
         return $this->id;
+    }
+
+    public function expire()
+    {
+        $this->expired_at = Carbon::now();
+        $this->status = self::STATUS_EXPIRED;
+        $this->save();
     }
 }
