@@ -55,7 +55,9 @@ class Handler extends ExceptionHandler
                 case $exception instanceof AuthenticationException:
                     $baseResponse->setCode(BaseResponse::CODE_UNAUTHORIZED)->setMessage($exception->getMessage())->setException($exception);
                     break;
-                case $exception instanceof ValidationException:
+                case ($exception instanceof ValidationException):
+                case ($exception instanceof ValidationCustomException):
+
                     $baseResponse->setCode(BaseResponse::CODE_VALIDATION)->setData($exception->errors());
                     break;
             }
