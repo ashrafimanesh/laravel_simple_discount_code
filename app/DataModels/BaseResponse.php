@@ -14,6 +14,8 @@ class BaseResponse
     const CODE_SUCCESS=200;
     const CODE_UNAUTHORIZED = 403;
     const CODE_EXCEPTION=500;
+    const CODE_VALIDATION = 422;
+    const CODE_OPERATION_FAILED = 423;
 
     /** @var int */
     protected $code;

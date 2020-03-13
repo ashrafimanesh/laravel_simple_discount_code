@@ -14,6 +14,14 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return response()->json((new BaseResponse())->setData($request->user())->toArray());
+Route::middleware(['auth:api'])->namespace('Api')->group(function(){
+    Route::middleware('admin')->prefix('admin')->group(function(){
+        Route::prefix('coupon')->group(function(){
+            Route::post('/','CouponController@store');
+        });
+    });
 });
+
+//Route::middleware('auth:api')->get('/user', function (Request $request) {
+//    return response()->json((new BaseResponse())->setData($request->user())->toArray());
+//});

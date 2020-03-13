@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * @property mixed email
+ */
 class User extends Authenticatable
 {
     use Notifiable;
@@ -40,5 +43,16 @@ class User extends Authenticatable
 
     public function assignedCodes(){
         return $this->hasMany(CouponCode::class, 'assigned_to');
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function isAdmin()
+    {
+        //TODO check role!
+        return $this->email == 'admin@test.com';
     }
 }

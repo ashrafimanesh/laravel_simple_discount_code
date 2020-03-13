@@ -23,7 +23,12 @@ class StoreCouponRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        $user = $this->user();
+        if(!$user){
+            return false;
+        }
+
+        return $user->can('create',Coupon::class);
     }
 
     /**
@@ -38,7 +43,7 @@ class StoreCouponRequest extends FormRequest
             'brand_id'=>['required','exists:'.Brand::TABLE_NAME.',id'],
             'amount'=>['required','integer'],
             'type'=>['required',Rule::in(Coupon::types())],
-            'link'=>['nullable','string','max:255'],
+            'link'=>['nullable','string','max:255','url'],
             'status'=>['required',Rule::in(Coupon::statuses())],
             'published_at'=>['nullable','date'],
         ];
