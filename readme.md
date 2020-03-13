@@ -29,10 +29,22 @@ Run `./vendor/bin/phpunit` to run tests.
     - `link` (optional)
     - `published_at` (optional , exp: `2020-03-13 19:26:00`)
 
+
+* Call `/api/coupon` or `/api/admin/coupon` to get coupons list
+    - filters[{key}]={value} (optional and key is one of `create_time | publish_time | brand_id`)
+    
+    Examples: 
+        - month condition: filters[create_time]=2020-02
+        - day condition: filters[create_time]=2020-02-01
+        - hour condition: filters[create_time]=2020-02-01 4
+    ***Note***: You can set multiple filters key.
+      
+
 * Call `/api/admin/coupon-code` api: 
     - `coupon_id` 
     - `code` (file or string)
-Note: This route is transactional. 
+    
+    ***Note***: This route is transactional. 
 
 * Call `/api/admin/coupon-code/assign` api :
 
