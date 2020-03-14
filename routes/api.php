@@ -16,12 +16,14 @@ use Illuminate\Http\Request;
 
 Route::middleware(['auth:api'])->namespace('Api')->group(function(){
     Route::get('coupon','CouponController@index');
+    Route::get('coupon-code','CouponCodeController@index');
     Route::middleware('admin')->prefix('admin')->group(function(){
         Route::prefix('coupon')->group(function(){
             Route::get('/','CouponController@index');
             Route::post('/','CouponController@store');
         });
         Route::prefix('coupon-code')->group(function(){
+            Route::get('/','CouponCodeController@index');
             Route::post('/','CouponCodeController@store');
             Route::post('assign','CouponCodeController@assign');
         });

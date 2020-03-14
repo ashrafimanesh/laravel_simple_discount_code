@@ -34,6 +34,10 @@ class CouponCode extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    public function scopeAssignedTo($query, $userId){
+        return $query->where('assigned_to', $userId);
+    }
+
     public function scopeFree($query, $couponId){
         return static::staticFree($query, $couponId);
     }
