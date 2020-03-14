@@ -16,36 +16,63 @@ class QueryFilter
      */
     private $filters;
 
-    public $filterClasses = [
-        'date'=>DateFilter::class,
-        'equal'=>EqualFilter::class
+    protected $limit = 0;
+    protected $page = 1;
+
+    protected $filterClasses = [
+        'date' => DateFilter::class,
+        'equal' => EqualFilter::class
     ];
 
-    public function __construct(array $filters = []){
+    protected $filterFields = [];
 
+    public function __construct(array $filters = [], $limit=0, $page=0)
+    {
         $this->filters = $filters;
+        $this->limit = (int)$limit;
+        $this->page = (int)$page;
+    }
+
+    public function addFilterField(FilterField $fieldFilter)
+    {
+        $this->filterFields[] = $fieldFilter;
+        return $this;
     }
 
     public function filter($query)
     {
-        if(!$this->filters || !$this->filterClasses){
+        if ($this->paginate()) {
+            $query = $this->setPaginationLimit($query);
+        }
+        if (!$this->filters || !$this->filterClasses || !$this->filterFields) {
             return $query;
         }
+        /** @var FilterField $filterField */
+        foreach ($this->filterFields as $filterField) {
+            $fieldName = $filterField->getFieldName();
+            if (isset($this->filters[$fieldName]) && isset($this->filterClasses[$filterField->getType()])) {
+                $class = $this->filterClasses[$filterField->getType()];
+                $query = (new $class($this->filters[$fieldName], $filterField->getColumn()))->filter($query);
+            }
+        }
+        return $query;
+    }
 
-        //TODO we can set columns and conditions dynamically.
+    /**
+     * @return bool
+     */
+    public function paginate()
+    {
+        return $this->limit > 0 && $this->page > 0;
+    }
 
-        if(isset($this->filters['create_time']) && isset($this->filterClasses['date'])){
-            $class = $this->filterClasses['date'];
-            $query = (new $class($this->filters['create_time'], 'created_at'))->filter($query);
-        }
-        if(isset($this->filters['publish_time']) && isset($this->filterClasses['date'])){
-            $class = $this->filterClasses['date'];
-            $query = (new $class($this->filters['publish_time'], 'published_at'))->filter($query);
-        }
-        if(isset($this->filters['brand_id']) && isset($this->filterClasses['equal'])){
-            $class = $this->filterClasses['equal'];
-            $query = (new $class($this->filters['brand_id'], 'brand_id'))->filter($query);
-        }
+    /**
+     * @param $query
+     * @return mixed
+     */
+    protected function setPaginationLimit($query)
+    {
+        $query = $query->limit($this->limit)->offset(($this->page - 1) * $this->limit);
         return $query;
     }
 }
