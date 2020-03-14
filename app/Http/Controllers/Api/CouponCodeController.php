@@ -14,9 +14,27 @@ use App\DataModels\BaseResponse;
 use App\Http\Requests\Api\AssignCodeRequest;
 use App\Http\Requests\Api\StoreCouponCodeRequest;
 use App\Logic\CouponCodeLogic;
+use App\Repositories\CouponCodeRepository;
+use App\Support\FilterField;
+use App\Support\QueryFilter;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CouponCodeController extends Controller
 {
+    public function index(Request $request){
+
+        $queryFilter = new QueryFilter($request->filters ?? [], $request->limit ?? 10, $request->page ?? 1);
+        //Add supported columns to filter by user
+        $queryFilter->addFilterField(new FilterField('coupon_id','equal'));
+        $queryFilter->addFilterField(new FilterField('assigned_by','equal'));
+        $queryFilter->addFilterField(new FilterField('assigned_to','equal'));
+
+        $couponCodes = (new CouponCodeRepository())->index(Auth::user(), $queryFilter);
+
+        return (new BaseResponse(BaseResponse::CODE_SUCCESS, $couponCodes));
+    }
+
     public function store(StoreCouponCodeRequest $request){
 
         $couponCode = (new CouponCodeLogic())->store($request->coupon(), $request->getCodes());

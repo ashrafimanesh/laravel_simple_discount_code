@@ -3,7 +3,7 @@
 1- Go to project root path.
 2- Run `php artisan migrate` command.
 3- Run `php artisan db:seed` command.
-- Note: In this command i create user with `admin@test.com` email and `admin` password.
+- Note: In this command i create user with `admin@test.com` email and `admin` password and this user is admin.
  
 ### Authentication
 
@@ -19,8 +19,9 @@ Run `./vendor/bin/phpunit` to run tests.
 
 
 ### Routes
+You should set `Accept: application/json` in header.
 
-* Call `/api/admin/coupon` api: 
+* Call `POST /api/admin/coupon` api: 
     - `name`(required and unique) 
     - `brand_id` (required)
     - `amount` (required)
@@ -30,7 +31,7 @@ Run `./vendor/bin/phpunit` to run tests.
     - `published_at` (optional , exp: `2020-03-13 19:26:00`)
 
 
-* Call `/api/coupon` or `/api/admin/coupon` to get coupons list
+* Call `GET /api/coupon` or `GET /api/admin/coupon` to get coupons list
     - filters[{key}]={value} (optional and key is one of `create_time | publish_time | brand_id`)
     
     Examples: 
@@ -40,13 +41,21 @@ Run `./vendor/bin/phpunit` to run tests.
     ***Note***: You can set multiple filters key.
       
 
-* Call `/api/admin/coupon-code` api: 
+
+* Call `GET /api/coupon-code` or `GET /api/admin/coupon-code` to get codes list
+    - filters[{key}]={value} (optional and key is one of `coupon_id | assigned_by | assigned_to`)
+    - limit=10 (optional)
+    - page=1 (optional)
+    ***Note***: You can see only code that is assigned to self user if user is not admin.
+    
+
+* Call `POST /api/admin/coupon-code` api: 
     - `coupon_id` 
     - `code` (file or string)
     
     ***Note***: This route is transactional. 
 
-* Call `/api/admin/coupon-code/assign` api :
+* Call `POST /api/admin/coupon-code/assign` api :
 
     - `coupon_id` required
     - `code` (optional) You assign special code to user

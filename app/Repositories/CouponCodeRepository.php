@@ -12,12 +12,26 @@ namespace App\Repositories;
 use App\Coupon;
 use App\CouponCode;
 use App\Events\CouponCodeCapacityEvent;
+use App\Support\QueryFilter;
 use App\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class CouponCodeRepository
 {
+
+    public function index(User $user, QueryFilter $queryFilter)
+    {
+        $query = CouponCode::query();
+        if(!$user->isAdmin()){
+            $query->assignedTo();
+        }
+
+        $query = $queryFilter->filter($query);
+
+        return $query->get();
+
+    }
 
     public function store(User $user, Coupon $coupon, $codes)
     {
